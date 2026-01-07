@@ -1,0 +1,51 @@
+import { useCallback, useEffect, useState } from "react";
+import { JournalData, JournalEntry } from "./types";
+import AsyncStorage from "@react-native-async-storage/async-storage";
+import dayjs from "dayjs";
+
+export const useEntries = () => {
+  const [loading, setLoading] = useState<boolean>(true);
+  const [currentEntry, setCurrentEntry] = useState<JournalEntry>();
+  const [currentPage, setCurrentPage] = useState<number>(0);
+  const [data, setData] = useState<JournalData>([]);
+
+  console.log("cv-currentPage:", currentPage);
+  const goBack = useCallback(() => {
+    if (currentPage === 0) {
+      return;
+    }
+    setCurrentPage(currentPage - 1);
+  }, [currentPage]);
+
+  const goForward = useCallback(() => {
+    if (currentPage === data.length) {
+      return;
+    }
+    setCurrentPage(currentPage + 1);
+  }, [currentPage]);
+
+  const fetchData = useCallback(async () => {
+    const result = await AsyncStorage.getItem("journalData");
+    console.log("cv-result:", result);
+    if (result) {
+      const parsedResult = JSON.parse(result);
+      setData(parsedResult);
+      setCurrentPage(parsedResult.length);
+    }
+    setLoading(false);
+  }, []);
+
+  useEffect(() => {
+    fetchData();
+  }, []);
+
+  useEffect(() => {
+    if (currentPage >= data.length) {
+      setCurrentEntry(undefined);
+    } else {
+      setCurrentEntry(data[currentPage]);
+    }
+  }, [currentPage, data]);
+
+  return { loading, currentEntry, goBack, goForward };
+};
