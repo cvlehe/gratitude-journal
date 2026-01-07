@@ -4,9 +4,15 @@ import { Text, TextInput, View } from "react-native";
 const GratitudeTextInput = ({
   position,
   entry,
+  onChange,
+  name,
+  onBlur,
 }: {
   position?: number;
   entry?: string;
+  onChange: (field: string) => (text: string) => void;
+  onBlur: (field: string) => (text: string) => void;
+  name: string;
 }) => {
   return (
     <View
@@ -21,6 +27,8 @@ const GratitudeTextInput = ({
     >
       {position && <Text>{position}.</Text>}
       <TextInput
+        onChangeText={onChange(name)}
+        onBlur={() => onBlur(name)}
         style={{
           maxWidth: 500,
           flex: 1,
@@ -30,7 +38,6 @@ const GratitudeTextInput = ({
           color: "#000",
         }}
         value={entry ?? ""}
-        // onChangeText={setEntry}
       />
     </View>
   );

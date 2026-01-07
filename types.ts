@@ -15,13 +15,15 @@ export type JournalData = JournalEntry[];
 
 export type JournalEntry = {
   date: Date;
-  quote: {
-    text: string;
-    author: string;
-  };
+  quote: Quote;
   grateful: string[];
   hopes: string[];
   affirmation: string;
   highlights: string[];
   lessonLearned: string;
+};
+
+export type Quote = {
+  text: string;
+  author: string;
 };

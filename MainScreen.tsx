@@ -1,13 +1,14 @@
 import dayjs from "dayjs";
-import React, { useEffect } from "react";
+import React, { useEffect, useState } from "react";
 import { View, Text, ScrollView, ActivityIndicator } from "react-native";
 import GratitudeNumberedInputSection from "./GratitudeNumberedInputSection";
 import GratitudeInputSection from "./GratitudeInputSection";
 import { SafeAreaView } from "react-native-safe-area-context";
 import { useEntries } from "./useEntries.hook";
-import { JournalEntry } from "./types";
+import { JournalEntry, Quote } from "./types";
 import { useFormik } from "formik";
 import { SubmitButton } from "./SubmitButton";
+import useQuotes from "./useQuotes.hook";
 
 export const MainScreen = ({
   entry,
@@ -16,6 +17,7 @@ export const MainScreen = ({
   entry?: JournalEntry;
   submitPressed: (values: JournalEntry) => void;
 }) => {
+  const [quote, setQuote] = useState<Quote>();
   const formik = useFormik({
     initialValues: {
       grateful: entry?.grateful ?? [],
@@ -28,11 +30,12 @@ export const MainScreen = ({
       submitPressed({
         ...values,
         date: entry?.date ?? new Date(),
-        quote: entry?.quote ?? { text: "", author: "" },
+        quote: quote ?? { text: "", author: "" },
       });
     },
   });
   useEffect(() => {
+    console.log("cv=render:", formik.values.grateful);
     formik.setValues({
       grateful: entry?.grateful ?? [],
       hopes: entry?.hopes ?? [],
@@ -41,37 +44,38 @@ export const MainScreen = ({
       lessonLearned: entry?.lessonLearned ?? "",
     });
   }, [entry]);
-  console.log("cv=render:", formik.values.grateful);
+
+  const { fetchQuote } = useQuotes();
+
+  if (!quote) {
+    fetchQuote().then((quote) => {
+      setQuote(quote);
+    });
+  }
+
   return (
     <>
-      <ScrollView style={{ flex: 1, marginBottom: 16 }}>
-        <View style={{ flex: 1, alignItems: "stretch" }}>
-          <View style={{ flex: 1, alignItems: "center" }}>
+      <ScrollView style={{ flex: 1 }}>
+        <View
+          style={{
+            flex: 1,
+            alignItems: "stretch",
+            paddingBottom: 48,
+            paddingHorizontal: 32,
+          }}
+        >
+          <View style={{ alignItems: "center" }}>
             <Text
               style={{
-                flex: 1,
                 fontSize: 20,
                 fontStyle: "italic",
                 textAlign: "center",
                 marginTop: 24,
-                borderBottomColor: "#000",
-                borderBottomWidth: 1,
-                width: 300,
               }}
             >
-              {`${dayjs(entry?.date).format("dddd - MMMM D, YYYY")}`}
+              "{quote?.text}"
             </Text>
           </View>
-          <Text
-            style={{
-              fontSize: 20,
-              fontStyle: "italic",
-              textAlign: "center",
-              marginTop: 24,
-            }}
-          >
-            "{entry?.quote.text}"
-          </Text>
           <Text
             style={{
               marginTop: 8,
@@ -80,28 +84,43 @@ export const MainScreen = ({
               textAlign: "center",
             }}
           >
-            - {entry?.quote.author}
+            - {quote?.author}
           </Text>
 
           <GratitudeNumberedInputSection
             title="I am grateful for..."
             entries={formik.values.grateful}
+            onChange={(field) => formik.handleChange(field)}
+            fieldName="grateful"
+            onBlur={(field) => formik.handleBlur(field)}
           />
           <GratitudeNumberedInputSection
             title="What would make today great?"
             entries={formik.values.hopes}
+            onChange={(field) => formik.handleChange(field)}
+            fieldName="hopes"
+            onBlur={(field) => formik.handleBlur(field)}
           />
           <GratitudeInputSection
             title="What is your affirmation for today?"
             entry={formik.values.affirmation}
+            onChange={(field) => formik.handleChange(field)}
+            fieldName="affirmation"
+            onBlur={(field) => formik.handleBlur(field)}
           />
           <GratitudeNumberedInputSection
             title="Highlights of the Day"
             entries={formik.values.highlights}
+            onChange={(field) => formik.handleChange(field)}
+            fieldName="highlights"
+            onBlur={(field) => formik.handleBlur(field)}
           />
           <GratitudeInputSection
             title="What did you learn today?"
             entry={formik.values.lessonLearned}
+            onChange={(field) => formik.handleChange(field)}
+            fieldName="lessonLearned"
+            onBlur={(field) => formik.handleBlur(field)}
           />
         </View>
       </ScrollView>

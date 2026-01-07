@@ -21,25 +21,62 @@ import { useEntries } from "./useEntries.hook";
 import { JournalEntry } from "./types";
 
 export default function App() {
-  const { goBack, goForward, currentEntry, loading } = useEntries();
+  const { goBack, goForward, currentEntry, loading, saveEntry } = useEntries();
   if (loading) {
     return <ActivityIndicator size="large" />;
   }
 
-  const submitPressed = (values: JournalEntry) => {
-    console.log(values);
+  const submitPressed = (entry: JournalEntry) => {
+    console.log(entry);
+    saveEntry(entry);
   };
+
   return (
-    <View style={{ flex: 1 }}>
+    <View style={{ flex: 1, paddingVertical: 48 }}>
       <MainScreen entry={currentEntry} submitPressed={submitPressed} />
       <View
         style={{
+          padding: 16,
           flexDirection: "row",
-          justifyContent: "space-around",
+          justifyContent: "center",
         }}
       >
-        <Button title="Back" onPress={goBack} />
-        <Button title="Forward" onPress={goForward} />
+        <TouchableOpacity
+          style={{
+            marginHorizontal: 8,
+          }}
+          onPress={goBack}
+        >
+          <Text style={{ fontSize: 40, width: 50, height: 50 }}>
+            {"\u2190"}
+          </Text>
+        </TouchableOpacity>
+        <View style={{ width: 300 }}>
+          <Text
+            style={{
+              fontSize: 20,
+              fontStyle: "italic",
+              textAlign: "center",
+              marginTop: 24,
+              borderBottomColor: "#000",
+              borderBottomWidth: 1,
+            }}
+          >
+            {`${dayjs(currentEntry?.date ?? new Date()).format(
+              "dddd - MMMM D, YYYY"
+            )}`}
+          </Text>
+        </View>
+        <TouchableOpacity
+          style={{
+            marginHorizontal: 8,
+          }}
+          onPress={goForward}
+        >
+          <Text style={{ fontSize: 40, width: 50, height: 50 }}>
+            {"\u2192"}
+          </Text>
+        </TouchableOpacity>
       </View>
     </View>
   );

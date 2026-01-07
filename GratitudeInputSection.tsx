@@ -1,14 +1,20 @@
 import React from "react";
-import { Text, TextInput } from "react-native";
+import { Text } from "react-native";
 import { View } from "react-native";
 import GratitudeTextInput from "./GratitudeTextInput";
 
 const GratitudeInputSection = ({
   title,
   entry,
+  onChange,
+  fieldName,
+  onBlur,
 }: {
   title: string;
   entry?: string;
+  onChange: (field: string) => (text: string) => void;
+  onBlur: (field: string) => (text: string) => void;
+  fieldName: string;
 }) => {
   return (
     <View
@@ -26,7 +32,12 @@ const GratitudeInputSection = ({
       >
         {title}
       </Text>
-      <GratitudeTextInput entry={entry} />
+      <GratitudeTextInput
+        entry={entry}
+        onChange={onChange}
+        name={fieldName}
+        onBlur={onBlur}
+      />
     </View>
   );
 };

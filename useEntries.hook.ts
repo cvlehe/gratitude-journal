@@ -39,6 +39,22 @@ export const useEntries = () => {
     fetchData();
   }, []);
 
+  const saveEntry = useCallback(
+    async (entry: JournalEntry) => {
+      if (currentPage >= data.length) {
+        const newData = [...data, entry];
+        setData(newData);
+        await AsyncStorage.setItem("journalData", JSON.stringify(newData));
+      } else {
+        const newData = [...data];
+        newData[currentPage] = entry;
+        setData(newData);
+        await AsyncStorage.setItem("journalData", JSON.stringify(newData));
+      }
+    },
+    [currentPage, data]
+  );
+
   useEffect(() => {
     if (currentPage >= data.length) {
       setCurrentEntry(undefined);
@@ -47,5 +63,5 @@ export const useEntries = () => {
     }
   }, [currentPage, data]);
 
-  return { loading, currentEntry, goBack, goForward };
+  return { loading, currentEntry, goBack, goForward, saveEntry };
 };
