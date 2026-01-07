@@ -6,10 +6,7 @@
   "build": {
     "development": {
       "developmentClient": true,
-      "distribution": "internal",
-      "hooks": {
-        "pre-install": "node -e \"console.log('NPM_TOKEN present:', Boolean(process.env.NPM_TOKEN))\" && ls -la && (test -f .npmrc && echo '.npmrc found' || echo '.npmrc missing')"
-      }
+      "distribution": "internal"
     },
     "preview": {
       "distribution": "internal"
