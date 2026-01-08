@@ -14,10 +14,11 @@ export const SubmitButton = ({ onSubmit }: { onSubmit: () => void }) => {
         alignItems: "center",
         alignSelf: "center",
         minWidth: 200,
+        marginBottom: 8,
       }}
     >
       <Text style={{ color: "#fff", fontSize: 16, fontWeight: "bold" }}>
-        Submit
+        Save
       </Text>
     </TouchableOpacity>
   );

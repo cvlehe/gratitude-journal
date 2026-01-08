@@ -27,6 +27,9 @@ const GratitudeTextInput = ({
     >
       {position && <Text>{position}.</Text>}
       <TextInput
+        textAlignVertical="bottom"
+        multiline
+        numberOfLines={2}
         onChangeText={onChange(name)}
         onBlur={() => onBlur(name)}
         style={{

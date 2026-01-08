@@ -1,7 +1,8 @@
 import { useCallback, useEffect, useState } from "react";
-import { JournalData, JournalEntry } from "./types";
+import { JournalData, JournalEntry } from "../types/types";
 import AsyncStorage from "@react-native-async-storage/async-storage";
 import dayjs from "dayjs";
+import Toast from "react-native-toast-message";
 
 export const useEntries = () => {
   const [loading, setLoading] = useState<boolean>(true);
@@ -26,7 +27,6 @@ export const useEntries = () => {
 
   const fetchData = useCallback(async () => {
     const result = await AsyncStorage.getItem("journalData");
-    console.log("cv-result:", result);
     if (result) {
       const parsedResult = JSON.parse(result);
       setData(parsedResult);
@@ -51,6 +51,10 @@ export const useEntries = () => {
         setData(newData);
         await AsyncStorage.setItem("journalData", JSON.stringify(newData));
       }
+      Toast.show({
+        type: "success",
+        text1: "Entry saved",
+      });
     },
     [currentPage, data]
   );

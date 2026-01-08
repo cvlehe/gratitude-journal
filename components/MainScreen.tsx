@@ -4,11 +4,12 @@ import { View, Text, ScrollView, ActivityIndicator } from "react-native";
 import GratitudeNumberedInputSection from "./GratitudeNumberedInputSection";
 import GratitudeInputSection from "./GratitudeInputSection";
 import { SafeAreaView } from "react-native-safe-area-context";
-import { useEntries } from "./useEntries.hook";
-import { JournalEntry, Quote } from "./types";
+import { useEntries } from "../hooks/useEntries.hook";
+import { JournalEntry, Quote } from "../types/types";
 import { useFormik } from "formik";
 import { SubmitButton } from "./SubmitButton";
-import useQuotes from "./useQuotes.hook";
+import useQuotes from "../hooks/useQuotes.hook";
+import { KeyboardAwareScrollView } from "react-native-keyboard-aware-scroll-view";
 
 export const MainScreen = ({
   entry,
@@ -17,7 +18,10 @@ export const MainScreen = ({
   entry?: JournalEntry;
   submitPressed: (values: JournalEntry) => void;
 }) => {
-  const [quote, setQuote] = useState<Quote>();
+  const [quote, setQuote] = useState<Quote | undefined>(
+    entry?.quote ?? undefined
+  );
+
   const formik = useFormik({
     initialValues: {
       grateful: entry?.grateful ?? [],
@@ -35,7 +39,6 @@ export const MainScreen = ({
     },
   });
   useEffect(() => {
-    console.log("cv=render:", formik.values.grateful);
     formik.setValues({
       grateful: entry?.grateful ?? [],
       hopes: entry?.hopes ?? [],
@@ -47,15 +50,17 @@ export const MainScreen = ({
 
   const { fetchQuote } = useQuotes();
 
-  if (!quote) {
-    fetchQuote().then((quote) => {
-      setQuote(quote);
-    });
-  }
+  useEffect(() => {
+    if (!quote) {
+      fetchQuote().then((quote) => {
+        setQuote(quote);
+      });
+    }
+  }, [quote]);
 
   return (
     <>
-      <ScrollView style={{ flex: 1 }}>
+      <KeyboardAwareScrollView style={{ flex: 1 }}>
         <View
           style={{
             flex: 1,
@@ -123,7 +128,7 @@ export const MainScreen = ({
             onBlur={(field) => formik.handleBlur(field)}
           />
         </View>
-      </ScrollView>
+      </KeyboardAwareScrollView>
       <SubmitButton onSubmit={formik.handleSubmit} />
     </>
   );
