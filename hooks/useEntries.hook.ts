@@ -10,7 +10,6 @@ export const useEntries = () => {
   const [currentPage, setCurrentPage] = useState<number>(0);
   const [data, setData] = useState<JournalData>([]);
 
-  console.log("cv-currentPage:", currentPage);
   const goBack = useCallback(() => {
     if (currentPage === 0) {
       return;
@@ -59,6 +58,13 @@ export const useEntries = () => {
     [currentPage, data]
   );
 
+  const deleteEntry = useCallback(async () => {
+    const newData = [...data];
+    newData.splice(currentPage, 1);
+    setData(newData);
+    await AsyncStorage.setItem("journalData", JSON.stringify(newData));
+  }, [currentPage, data]);
+
   useEffect(() => {
     if (currentPage >= data.length) {
       setCurrentEntry(undefined);
@@ -67,5 +73,5 @@ export const useEntries = () => {
     }
   }, [currentPage, data]);
 
-  return { loading, currentEntry, goBack, goForward, saveEntry };
+  return { loading, currentEntry, goBack, goForward, saveEntry, deleteEntry };
 };

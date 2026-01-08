@@ -1,14 +1,16 @@
 import { StatusBar } from "expo-status-bar";
 import React from "react";
 import { ActivityIndicator, StyleSheet, View } from "react-native";
-import { MainScreen } from "./components/MainScreen";
-import { useEntries } from "./hooks/useEntries.hook";
-import { JournalEntry } from "./types/types";
-import DateRow from "./components/DateRow";
+import { MainScreen } from "./MainScreen";
+import { useEntries } from "../hooks/useEntries.hook";
+import { JournalEntry } from "../types/types";
+import DateRow from "./DateRow";
 import Toast from "react-native-toast-message";
+import DeleteRow from "./DeleteRow";
 
 export default function App() {
-  const { goBack, goForward, currentEntry, loading, saveEntry } = useEntries();
+  const { goBack, goForward, currentEntry, loading, saveEntry, deleteEntry } =
+    useEntries();
   if (loading) {
     return <ActivityIndicator size="large" />;
   }
@@ -20,6 +22,7 @@ export default function App() {
 
   return (
     <View style={styles.container}>
+      {currentEntry && <DeleteRow onPress={deleteEntry} />}
       <MainScreen entry={currentEntry} submitPressed={submitPressed} />
       <DateRow
         goBack={goBack}

@@ -1,6 +1,12 @@
 import dayjs from "dayjs";
 import React, { useEffect, useState } from "react";
-import { View, Text, ScrollView, ActivityIndicator } from "react-native";
+import {
+  View,
+  Text,
+  ScrollView,
+  ActivityIndicator,
+  TouchableOpacity,
+} from "react-native";
 import GratitudeNumberedInputSection from "./GratitudeNumberedInputSection";
 import GratitudeInputSection from "./GratitudeInputSection";
 import { SafeAreaView } from "react-native-safe-area-context";
@@ -52,8 +58,8 @@ export const MainScreen = ({
 
   useEffect(() => {
     if (!quote) {
-      fetchQuote().then((quote) => {
-        setQuote(quote);
+      fetchQuote().then((result) => {
+        setQuote(result);
       });
     }
   }, [quote]);
@@ -75,7 +81,7 @@ export const MainScreen = ({
                 fontSize: 20,
                 fontStyle: "italic",
                 textAlign: "center",
-                marginTop: 24,
+                marginTop: 16,
               }}
             >
               "{quote?.text}"
