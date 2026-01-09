@@ -1,21 +1,13 @@
-import dayjs from "dayjs";
 import React, { useEffect, useState } from "react";
-import {
-  View,
-  Text,
-  ScrollView,
-  ActivityIndicator,
-  TouchableOpacity,
-} from "react-native";
+import { View } from "react-native";
 import GratitudeNumberedInputSection from "./GratitudeNumberedInputSection";
 import GratitudeInputSection from "./GratitudeInputSection";
-import { SafeAreaView } from "react-native-safe-area-context";
-import { useEntries } from "../hooks/useEntries.hook";
 import { JournalEntry, Quote } from "../types/types";
 import { useFormik } from "formik";
 import { SubmitButton } from "./SubmitButton";
 import useQuotes from "../hooks/useQuotes.hook";
 import { KeyboardAwareScrollView } from "react-native-keyboard-aware-scroll-view";
+import QuoteRow from "./QuoteRow";
 
 export const MainScreen = ({
   entry,
@@ -66,38 +58,18 @@ export const MainScreen = ({
 
   return (
     <>
-      <KeyboardAwareScrollView style={{ flex: 1 }}>
+      <KeyboardAwareScrollView
+        enableOnAndroid
+        extraHeight={150}
+        style={{ flex: 1, paddingHorizontal: 32 }}
+      >
         <View
           style={{
             flex: 1,
             alignItems: "stretch",
-            paddingBottom: 48,
-            paddingHorizontal: 32,
           }}
         >
-          <View style={{ alignItems: "center" }}>
-            <Text
-              style={{
-                fontSize: 20,
-                fontStyle: "italic",
-                textAlign: "center",
-                marginTop: 16,
-              }}
-            >
-              "{quote?.text}"
-            </Text>
-          </View>
-          <Text
-            style={{
-              marginTop: 8,
-              fontSize: 20,
-              fontWeight: "bold",
-              textAlign: "center",
-            }}
-          >
-            - {quote?.author}
-          </Text>
-
+          <QuoteRow quote={quote} />
           <GratitudeNumberedInputSection
             title="I am grateful for..."
             entries={formik.values.grateful}
@@ -134,8 +106,8 @@ export const MainScreen = ({
             onBlur={(field) => formik.handleBlur(field)}
           />
         </View>
+        <SubmitButton onSubmit={formik.handleSubmit} />
       </KeyboardAwareScrollView>
-      <SubmitButton onSubmit={formik.handleSubmit} />
     </>
   );
 };

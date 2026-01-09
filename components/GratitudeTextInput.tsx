@@ -20,7 +20,6 @@ const GratitudeTextInput = ({
         flexDirection: "row",
         justifyContent: "center",
         alignItems: "flex-end",
-        marginTop: 16,
         flex: 1,
         flexGrow: 1,
       }}

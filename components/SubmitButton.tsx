@@ -12,9 +12,8 @@ export const SubmitButton = ({ onSubmit }: { onSubmit: () => void }) => {
         borderRadius: 8,
         justifyContent: "center",
         alignItems: "center",
-        alignSelf: "center",
-        minWidth: 200,
-        marginBottom: 8,
+        alignSelf: "stretch",
+        marginVertical: 32,
       }}
     >
       <Text style={{ color: "#fff", fontSize: 16, fontWeight: "bold" }}>

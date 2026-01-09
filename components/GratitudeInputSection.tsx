@@ -2,6 +2,7 @@ import React from "react";
 import { Text } from "react-native";
 import { View } from "react-native";
 import GratitudeTextInput from "./GratitudeTextInput";
+import GratitudeInputTitle from "./GratitudeInputTitle";
 
 const GratitudeInputSection = ({
   title,
@@ -22,16 +23,7 @@ const GratitudeInputSection = ({
         marginTop: 16,
       }}
     >
-      <Text
-        style={{
-          marginTop: 64,
-          fontSize: 20,
-          fontStyle: "italic",
-          textAlign: "center",
-        }}
-      >
-        {title}
-      </Text>
+      <GratitudeInputTitle title={title} />
       <GratitudeTextInput
         entry={entry}
         onChange={onChange}

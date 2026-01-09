@@ -16,7 +16,7 @@ const NavigationButton = ({
       }}
       onPress={onPress}
     >
-      <Text style={{ fontSize: 40, width: 50, height: 50 }}>
+      <Text style={{ fontSize: 40 }}>
         {type === "forward" ? "\u2192" : "\u2190"}
       </Text>
     </TouchableOpacity>

@@ -21,6 +21,8 @@ const DateRow = ({
         justifyContent: "center",
         backgroundColor: "white",
         paddingBottom: 48,
+        borderTopLeftRadius: 16,
+        borderTopRightRadius: 16,
       }}
     >
       <NavigationButton onPress={goBack} type="back" />
