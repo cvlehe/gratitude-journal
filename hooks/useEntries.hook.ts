@@ -78,9 +78,7 @@ export const useEntries = () => {
   }, [currentPage, data]);
 
   const importEntries = useCallback(async () => {
-    console.log("importing entries");
     const result = await importEntriesFromStorage();
-    console.log(result);
     if (result) {
       setData(result);
       Toast.show({
@@ -91,7 +89,6 @@ export const useEntries = () => {
   }, []);
 
   const exportEntries = useCallback(async () => {
-    console.log("exporting entries");
     await exportEntriesToStorage(data);
     Toast.show({
       type: "success",
