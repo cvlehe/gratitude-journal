@@ -20,6 +20,7 @@ const Menu = ({
         ref={menuRef}
         title="Menu Title"
         onPressAction={({ nativeEvent }) => {
+          console.log("cv-nativeEvent:", nativeEvent);
           onItemPress(nativeEvent.event as "import" | "export" | "delete");
         }}
         actions={[

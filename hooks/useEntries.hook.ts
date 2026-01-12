@@ -3,6 +3,10 @@ import { JournalData, JournalEntry } from "../types/types";
 import AsyncStorage from "@react-native-async-storage/async-storage";
 import dayjs from "dayjs";
 import Toast from "react-native-toast-message";
+import {
+  exportEntriesToStorage,
+  importEntriesFromStorage,
+} from "../helpers/entry-storage.helper";
 
 export const useEntries = () => {
   const [loading, setLoading] = useState<boolean>(true);
@@ -73,5 +77,36 @@ export const useEntries = () => {
     }
   }, [currentPage, data]);
 
-  return { loading, currentEntry, goBack, goForward, saveEntry, deleteEntry };
+  const importEntries = useCallback(async () => {
+    console.log("importing entries");
+    const result = await importEntriesFromStorage();
+    console.log(result);
+    if (result) {
+      setData(result);
+      Toast.show({
+        type: "success",
+        text1: "Entries imported",
+      });
+    }
+  }, []);
+
+  const exportEntries = useCallback(async () => {
+    console.log("exporting entries");
+    await exportEntriesToStorage(data);
+    Toast.show({
+      type: "success",
+      text1: "Entries exported",
+    });
+  }, [data]);
+
+  return {
+    loading,
+    currentEntry,
+    goBack,
+    goForward,
+    saveEntry,
+    deleteEntry,
+    importEntries,
+    exportEntries,
+  };
 };

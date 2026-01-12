@@ -33,6 +33,14 @@
       "eas": {
         "projectId": "bbed0f93-7e5c-43a0-96b0-223375abfc39"
       }
-    }
+    },
+    "plugins": [
+      [
+        "expo-document-picker",
+        {
+          "iCloudContainerEnvironment": "Production"
+        }
+      ]
+    ]
   }
 }

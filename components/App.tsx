@@ -10,17 +10,34 @@ import DeleteRow from "./DeleteRow";
 import Menu from "./Menu";
 
 export default function App() {
-  const { goBack, goForward, currentEntry, loading, saveEntry, deleteEntry } =
-    useEntries();
+  const {
+    goBack,
+    goForward,
+    currentEntry,
+    loading,
+    saveEntry,
+    deleteEntry,
+    importEntries,
+    exportEntries,
+  } = useEntries();
 
-  const onItemPress = useCallback((id: "import" | "export" | "delete") => {
-    switch (id) {
-      case "import":
-        break;
-      case "export":
-        break;
-    }
-  }, []);
+  const onItemPress = useCallback(
+    (id: "import" | "export" | "delete") => {
+      switch (id) {
+        case "import":
+          // Use a document picker to import a JSON file and update the entries.
+          importEntries();
+          break;
+        case "export":
+          exportEntries();
+          break;
+        case "delete":
+          deleteEntry();
+          break;
+      }
+    },
+    [deleteEntry]
+  );
 
   if (loading) {
     return <ActivityIndicator size="large" />;
