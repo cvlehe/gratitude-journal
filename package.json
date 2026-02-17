@@ -7,7 +7,9 @@
     "android": "expo run:android",
     "ios": "expo run:ios",
     "web": "expo start --web",
-    "build:internal": "eas build --platform android --profile preview"
+    "build:internal": "eas build --platform android --profile preview",
+    "format": "prettier --write .",
+    "check-format": "prettier --check ."
   },
   "dependencies": {
     "@react-native-async-storage/async-storage": "2.2.0",
@@ -29,6 +31,7 @@
   },
   "devDependencies": {
     "@types/react": "~19.1.0",
+    "prettier": "3.8.1",
     "typescript": "~5.9.2"
   },
   "private": true

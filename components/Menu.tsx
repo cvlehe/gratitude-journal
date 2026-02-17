@@ -1,18 +1,14 @@
-import React, { useRef } from "react";
-import { View, Text, Platform, Button, TouchableOpacity } from "react-native";
-import { MenuView, MenuComponentRef } from "@react-native-menu/menu";
-import Ionicons from "@expo/vector-icons/Ionicons";
+import React, { useRef } from 'react';
+import { View, Text, Platform, Button, TouchableOpacity } from 'react-native';
+import { MenuView, MenuComponentRef } from '@react-native-menu/menu';
+import Ionicons from '@expo/vector-icons/Ionicons';
 
-const Menu = ({
-  onItemPress,
-}: {
-  onItemPress: (id: "import" | "export" | "delete") => void;
-}) => {
+const Menu = ({ onItemPress }: { onItemPress: (id: 'import' | 'export' | 'delete') => void }) => {
   const menuRef = useRef<MenuComponentRef>(null);
   return (
     <View
       style={{
-        alignItems: "flex-end",
+        alignItems: 'flex-end',
       }}
     >
       <MenuView
@@ -20,20 +16,20 @@ const Menu = ({
         ref={menuRef}
         title="Menu Title"
         onPressAction={({ nativeEvent }) => {
-          onItemPress(nativeEvent.event as "import" | "export" | "delete");
+          onItemPress(nativeEvent.event as 'import' | 'export' | 'delete');
         }}
         actions={[
           {
-            id: "import",
-            title: "Import",
+            id: 'import',
+            title: 'Import',
           },
           {
-            id: "export",
-            title: "Export",
+            id: 'export',
+            title: 'Export',
           },
           {
-            id: "delete",
-            title: "Delete",
+            id: 'delete',
+            title: 'Delete',
             attributes: {
               destructive: true,
             },

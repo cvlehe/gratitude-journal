@@ -1,13 +1,13 @@
-import React, { useEffect, useState } from "react";
-import { View } from "react-native";
-import GratitudeNumberedInputSection from "./GratitudeNumberedInputSection";
-import GratitudeInputSection from "./GratitudeInputSection";
-import { JournalEntry, Quote } from "../types/types";
-import { useFormik } from "formik";
-import { SubmitButton } from "./SubmitButton";
-import useQuotes from "../hooks/useQuotes.hook";
-import { KeyboardAwareScrollView } from "react-native-keyboard-aware-scroll-view";
-import QuoteRow from "./QuoteRow";
+import React, { useCallback, useEffect, useState } from 'react';
+import { View } from 'react-native';
+import GratitudeNumberedInputSection from './GratitudeNumberedInputSection';
+import GratitudeInputSection from './GratitudeInputSection';
+import { JournalEntry, Quote } from '../types/types';
+import { useFormik } from 'formik';
+import { SubmitButton } from './SubmitButton';
+import useQuotes from '../hooks/useQuotes.hook';
+import { KeyboardAwareScrollView } from 'react-native-keyboard-aware-scroll-view';
+import QuoteRow from './QuoteRow';
 
 export const MainScreen = ({
   entry,
@@ -16,33 +16,39 @@ export const MainScreen = ({
   entry?: JournalEntry;
   submitPressed: (values: JournalEntry) => void;
 }) => {
-  const [quote, setQuote] = useState<Quote | undefined>(
-    entry?.quote ?? undefined
-  );
+  const [quote, setQuote] = useState<Quote | undefined>(entry?.quote ?? undefined);
 
   const formik = useFormik({
     initialValues: {
       grateful: entry?.grateful ?? [],
       hopes: entry?.hopes ?? [],
-      affirmation: entry?.affirmation ?? "",
+      affirmation: entry?.affirmation ?? '',
       highlights: entry?.highlights ?? [],
-      lessonLearned: "",
+      lessonLearned: '',
     },
     onSubmit: (values) => {
+      onSubmitCallback(values);
+    },
+  });
+
+  const onSubmitCallback = useCallback(
+    (values: typeof formik.initialValues) => {
       submitPressed({
         ...values,
         date: entry?.date ?? new Date(),
-        quote: quote ?? { text: "", author: "" },
+        quote: quote ?? { text: '', author: '' },
       });
     },
-  });
+    [entry, quote, submitPressed]
+  );
+
   useEffect(() => {
     formik.setValues({
       grateful: entry?.grateful ?? [],
       hopes: entry?.hopes ?? [],
-      affirmation: entry?.affirmation ?? "",
+      affirmation: entry?.affirmation ?? '',
       highlights: entry?.highlights ?? [],
-      lessonLearned: entry?.lessonLearned ?? "",
+      lessonLearned: entry?.lessonLearned ?? '',
     });
   }, [entry]);
 
@@ -58,15 +64,12 @@ export const MainScreen = ({
 
   return (
     <>
-      <KeyboardAwareScrollView
-        enableOnAndroid
-        extraHeight={150}
-        style={{ flex: 1, paddingHorizontal: 32 }}
-      >
+      <KeyboardAwareScrollView enableOnAndroid extraHeight={150} style={{ flex: 1 }}>
         <View
           style={{
             flex: 1,
-            alignItems: "stretch",
+            alignItems: 'stretch',
+            paddingHorizontal: 32,
           }}
         >
           <QuoteRow quote={quote} />
@@ -91,6 +94,15 @@ export const MainScreen = ({
             fieldName="affirmation"
             onBlur={(field) => formik.handleBlur(field)}
           />
+        </View>
+        <View
+          style={{
+            flex: 1,
+            alignItems: 'stretch',
+            paddingHorizontal: 32,
+            backgroundColor: '#E0E1DA',
+          }}
+        >
           <GratitudeNumberedInputSection
             title="Highlights of the Day"
             entries={formik.values.highlights}

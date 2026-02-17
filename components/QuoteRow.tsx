@@ -1,7 +1,7 @@
-import React from "react";
-import { View } from "react-native";
-import { Text } from "react-native";
-import { Quote } from "../types/types";
+import React from 'react';
+import { View } from 'react-native';
+import { Text } from 'react-native';
+import { Quote } from '../types/types';
 
 const QuoteRow = ({ quote }: { quote?: Quote }) => {
   return (
@@ -9,8 +9,8 @@ const QuoteRow = ({ quote }: { quote?: Quote }) => {
       <Text
         style={{
           fontSize: 20,
-          fontStyle: "italic",
-          textAlign: "center",
+          fontStyle: 'italic',
+          textAlign: 'center',
           marginTop: 32,
         }}
       >
@@ -20,8 +20,8 @@ const QuoteRow = ({ quote }: { quote?: Quote }) => {
         style={{
           marginTop: 8,
           fontSize: 20,
-          fontWeight: "bold",
-          textAlign: "center",
+          fontWeight: 'bold',
+          textAlign: 'center',
         }}
       >
         - {quote?.author}

@@ -1,5 +1,5 @@
-import React from "react";
-import { Text, TextInput, View } from "react-native";
+import React from 'react';
+import { Text, TextInput, View } from 'react-native';
 
 const GratitudeTextInput = ({
   position,
@@ -17,9 +17,9 @@ const GratitudeTextInput = ({
   return (
     <View
       style={{
-        flexDirection: "row",
-        justifyContent: "center",
-        alignItems: "flex-end",
+        flexDirection: 'row',
+        justifyContent: 'center',
+        alignItems: 'flex-end',
         flex: 1,
         flexGrow: 1,
       }}
@@ -36,10 +36,10 @@ const GratitudeTextInput = ({
           flex: 1,
           paddingStart: 8,
           borderBottomWidth: 1,
-          borderColor: "#000",
-          color: "#000",
+          borderColor: '#000',
+          color: '#000',
         }}
-        value={entry ?? ""}
+        value={entry ?? ''}
       />
     </View>
   );

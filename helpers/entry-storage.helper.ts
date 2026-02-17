@@ -1,12 +1,10 @@
-import * as DocumentPicker from "expo-document-picker";
-import { Toast } from "react-native-toast-message/lib/src/Toast";
-import { JournalEntry } from "../types/types";
-import * as FileSystem from "expo-file-system";
-import dayjs from "dayjs";
+import * as DocumentPicker from 'expo-document-picker';
+import { Toast } from 'react-native-toast-message/lib/src/Toast';
+import { JournalEntry } from '../types/types';
+import * as FileSystem from 'expo-file-system';
+import dayjs from 'dayjs';
 
-export const importEntriesFromStorage = async (): Promise<
-  JournalEntry[] | undefined
-> => {
+export const importEntriesFromStorage = async (): Promise<JournalEntry[] | undefined> => {
   try {
     let file = await FileSystem.File.pickFileAsync();
 
@@ -17,25 +15,23 @@ export const importEntriesFromStorage = async (): Promise<
     const importedEntries = JSON.parse(fileContents);
     return importedEntries;
   } catch (error) {
-    Toast.show({ type: "error", text1: "Failed to import JSON." });
+    Toast.show({ type: 'error', text1: 'Failed to import JSON.' });
     return undefined;
   }
 };
 
-export const exportEntriesToStorage = async (
-  entries: JournalEntry[]
-): Promise<void> => {
+export const exportEntriesToStorage = async (entries: JournalEntry[]): Promise<void> => {
   try {
     const json = JSON.stringify(entries, null, 2);
     const directory = await FileSystem.Directory.pickDirectoryAsync();
     const file = await directory.createFile(
-      `gratitude-backup-${dayjs().format("YYYY-MM-DD-HH-mm-ss")}`,
-      "application/json"
+      `gratitude-backup-${dayjs().format('YYYY-MM-DD-HH-mm-ss')}`,
+      'application/json'
     );
 
     file.write(json);
-    Toast.show({ type: "success", text1: "Entries exported" });
+    Toast.show({ type: 'success', text1: 'Entries exported' });
   } catch (error) {
-    Toast.show({ type: "error", text1: "Failed to export JSON." });
+    Toast.show({ type: 'error', text1: 'Failed to export JSON.' });
   }
 };

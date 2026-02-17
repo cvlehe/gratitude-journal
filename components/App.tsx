@@ -1,13 +1,11 @@
-import { StatusBar } from "expo-status-bar";
-import React, { useCallback } from "react";
-import { ActivityIndicator, StyleSheet, View } from "react-native";
-import { MainScreen } from "./MainScreen";
-import { useEntries } from "../hooks/useEntries.hook";
-import { JournalEntry } from "../types/types";
-import DateRow from "./DateRow";
-import Toast from "react-native-toast-message";
-import DeleteRow from "./DeleteRow";
-import Menu from "./Menu";
+import { StatusBar } from 'expo-status-bar';
+import React, { useCallback } from 'react';
+import { ActivityIndicator, StyleSheet, View } from 'react-native';
+import { MainScreen } from './MainScreen';
+import { useEntries } from '../hooks/useEntries.hook';
+import DateRow from './DateRow';
+import Toast from 'react-native-toast-message';
+import Menu from './Menu';
 
 export default function App() {
   const {
@@ -22,16 +20,16 @@ export default function App() {
   } = useEntries();
 
   const onItemPress = useCallback(
-    (id: "import" | "export" | "delete") => {
+    (id: 'import' | 'export' | 'delete') => {
       switch (id) {
-        case "import":
+        case 'import':
           // Use a document picker to import a JSON file and update the entries.
           importEntries();
           break;
-        case "export":
+        case 'export':
           exportEntries();
           break;
-        case "delete":
+        case 'delete':
           deleteEntry();
           break;
       }
@@ -47,13 +45,9 @@ export default function App() {
     <View style={styles.container}>
       <Menu onItemPress={onItemPress} />
       <MainScreen entry={currentEntry} submitPressed={saveEntry} />
-      <DateRow
-        goBack={goBack}
-        goForward={goForward}
-        currentEntry={currentEntry}
-      />
+      <DateRow goBack={goBack} goForward={goForward} currentEntry={currentEntry} />
       <StatusBar style="auto" />
-      <Toast />
+      <Toast topOffset={80} />
     </View>
   );
 }
@@ -61,7 +55,7 @@ export default function App() {
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    backgroundColor: "#F5F3E6",
+    backgroundColor: '#F5F3E6',
     paddingTop: 48,
   },
 });

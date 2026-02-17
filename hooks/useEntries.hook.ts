@@ -1,12 +1,10 @@
-import { useCallback, useEffect, useState } from "react";
-import { JournalData, JournalEntry } from "../types/types";
-import AsyncStorage from "@react-native-async-storage/async-storage";
-import dayjs from "dayjs";
-import Toast from "react-native-toast-message";
-import {
-  exportEntriesToStorage,
-  importEntriesFromStorage,
-} from "../helpers/entry-storage.helper";
+import { useCallback, useEffect, useState } from 'react';
+import { JournalData, JournalEntry } from '../types/types';
+import AsyncStorage from '@react-native-async-storage/async-storage';
+import dayjs from 'dayjs';
+import Toast from 'react-native-toast-message';
+import { exportEntriesToStorage, importEntriesFromStorage } from '../helpers/entry-storage.helper';
+import isToday from 'dayjs/plugin/isToday'; // ES 2015
 
 export const useEntries = () => {
   const [loading, setLoading] = useState<boolean>(true);
@@ -29,11 +27,17 @@ export const useEntries = () => {
   }, [currentPage]);
 
   const fetchData = useCallback(async () => {
-    const result = await AsyncStorage.getItem("journalData");
+    const result = await AsyncStorage.getItem('journalData');
     if (result) {
-      const parsedResult = JSON.parse(result);
+      const parsedResult: JournalData = JSON.parse(result);
       setData(parsedResult);
-      setCurrentPage(parsedResult.length);
+      if (parsedResult.length > 0) {
+        const lastEntry = parsedResult[parsedResult.length - 1];
+        dayjs.extend(isToday);
+        if (dayjs(lastEntry.date).isToday()) {
+          setCurrentPage(parsedResult.length - 1);
+        }
+      }
     }
     setLoading(false);
   }, []);
@@ -47,16 +51,16 @@ export const useEntries = () => {
       if (currentPage >= data.length) {
         const newData = [...data, entry];
         setData(newData);
-        await AsyncStorage.setItem("journalData", JSON.stringify(newData));
+        await AsyncStorage.setItem('journalData', JSON.stringify(newData));
       } else {
         const newData = [...data];
         newData[currentPage] = entry;
         setData(newData);
-        await AsyncStorage.setItem("journalData", JSON.stringify(newData));
+        await AsyncStorage.setItem('journalData', JSON.stringify(newData));
       }
       Toast.show({
-        type: "success",
-        text1: "Entry saved",
+        type: 'success',
+        text1: 'Entry saved',
       });
     },
     [currentPage, data]
@@ -66,7 +70,7 @@ export const useEntries = () => {
     const newData = [...data];
     newData.splice(currentPage, 1);
     setData(newData);
-    await AsyncStorage.setItem("journalData", JSON.stringify(newData));
+    await AsyncStorage.setItem('journalData', JSON.stringify(newData));
   }, [currentPage, data]);
 
   useEffect(() => {
@@ -82,8 +86,8 @@ export const useEntries = () => {
     if (result) {
       setData(result);
       Toast.show({
-        type: "success",
-        text1: "Entries imported",
+        type: 'success',
+        text1: 'Entries imported',
       });
     }
   }, []);
@@ -91,8 +95,8 @@ export const useEntries = () => {
   const exportEntries = useCallback(async () => {
     await exportEntriesToStorage(data);
     Toast.show({
-      type: "success",
-      text1: "Entries exported",
+      type: 'success',
+      text1: 'Entries exported',
     });
   }, [data]);
 

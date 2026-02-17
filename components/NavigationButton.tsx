@@ -1,14 +1,8 @@
-import React from "react";
-import { Text } from "react-native";
-import { TouchableOpacity } from "react-native";
+import React from 'react';
+import { Text } from 'react-native';
+import { TouchableOpacity } from 'react-native';
 
-const NavigationButton = ({
-  onPress,
-  type,
-}: {
-  onPress: () => void;
-  type: "back" | "forward";
-}) => {
+const NavigationButton = ({ onPress, type }: { onPress: () => void; type: 'back' | 'forward' }) => {
   return (
     <TouchableOpacity
       style={{
@@ -16,9 +10,7 @@ const NavigationButton = ({
       }}
       onPress={onPress}
     >
-      <Text style={{ fontSize: 40 }}>
-        {type === "forward" ? "\u2192" : "\u2190"}
-      </Text>
+      <Text style={{ fontSize: 40 }}>{type === 'forward' ? '\u2192' : '\u2190'}</Text>
     </TouchableOpacity>
   );
 };
