@@ -36,6 +36,8 @@ export const useEntries = () => {
         dayjs.extend(isToday);
         if (dayjs(lastEntry.date).isToday()) {
           setCurrentPage(parsedResult.length - 1);
+        }else {
+          setCurrentPage(parsedResult.length);
         }
       }
     }
