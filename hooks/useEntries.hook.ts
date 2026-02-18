@@ -5,6 +5,7 @@ import dayjs from 'dayjs';
 import Toast from 'react-native-toast-message';
 import { exportEntriesToStorage, importEntriesFromStorage } from '../helpers/entry-storage.helper';
 import isToday from 'dayjs/plugin/isToday'; // ES 2015
+dayjs.extend(isToday);
 
 export const useEntries = () => {
   const [loading, setLoading] = useState<boolean>(true);
@@ -20,7 +21,7 @@ export const useEntries = () => {
   }, [currentPage]);
 
   const goForward = useCallback(() => {
-    if (currentPage === data.length) {
+    if (currentPage === data.length || dayjs(currentEntry?.date).isToday()) {
       return;
     }
     setCurrentPage(currentPage + 1);
@@ -33,7 +34,6 @@ export const useEntries = () => {
       setData(parsedResult);
       if (parsedResult.length > 0) {
         const lastEntry = parsedResult[parsedResult.length - 1];
-        dayjs.extend(isToday);
         if (dayjs(lastEntry.date).isToday()) {
           setCurrentPage(parsedResult.length - 1);
         }else {
