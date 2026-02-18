@@ -34,7 +34,7 @@ export default function App() {
           break;
       }
     },
-    [deleteEntry]
+    [deleteEntry, exportEntries, importEntries]
   );
 
   if (loading) {

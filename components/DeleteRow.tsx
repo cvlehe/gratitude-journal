@@ -1,6 +1,5 @@
 import React from 'react';
-import { Text, TouchableOpacity } from 'react-native';
-import { View } from 'react-native';
+import { Text, TouchableOpacity, View } from 'react-native';
 
 const DeleteRow = ({ onPress }: { onPress: () => void }) => {
   return (

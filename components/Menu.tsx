@@ -1,5 +1,5 @@
 import React, { useRef } from 'react';
-import { View, Text, Platform, Button, TouchableOpacity } from 'react-native';
+import { View, TouchableOpacity } from 'react-native';
 import { MenuView, MenuComponentRef } from '@react-native-menu/menu';
 import Ionicons from '@expo/vector-icons/Ionicons';
 

@@ -1,5 +1,4 @@
 import React, { useCallback, useEffect, useState } from 'react';
-import { View } from 'react-native';
 import GratitudeNumberedInputSection from './GratitudeNumberedInputSection';
 import GratitudeInputSection from './GratitudeInputSection';
 import { JournalEntry, Quote } from '../types/types';
@@ -8,6 +7,7 @@ import { SubmitButton } from './SubmitButton';
 import useQuotes from '../hooks/useQuotes.hook';
 import { KeyboardAwareScrollView } from 'react-native-keyboard-aware-scroll-view';
 import QuoteRow from './QuoteRow';
+import { Section } from './Section';
 
 export const MainScreen = ({
   entry,
@@ -39,7 +39,7 @@ export const MainScreen = ({
         quote: quote ?? { text: '', author: '' },
       });
     },
-    [entry, quote, submitPressed]
+    [entry?.date, formik, quote, submitPressed]
   );
 
   useEffect(() => {
@@ -60,19 +60,13 @@ export const MainScreen = ({
         setQuote(result);
       });
     }
-  }, [quote]);
+  }, [fetchQuote, quote]);
 
   return (
     <>
       <KeyboardAwareScrollView enableOnAndroid extraHeight={150} style={{ flex: 1 }}>
-        <View
-          style={{
-            flex: 1,
-            alignItems: 'stretch',
-            paddingHorizontal: 32,
-          }}
-        >
-          <QuoteRow quote={quote} />
+        <Section>
+          {quote && <QuoteRow quote={quote} />}
           <GratitudeNumberedInputSection
             title="I am grateful for..."
             entries={formik.values.grateful}
@@ -94,15 +88,8 @@ export const MainScreen = ({
             fieldName="affirmation"
             onBlur={(field) => formik.handleBlur(field)}
           />
-        </View>
-        <View
-          style={{
-            flex: 1,
-            alignItems: 'stretch',
-            paddingHorizontal: 32,
-            backgroundColor: '#E0E1DA',
-          }}
-        >
+        </Section>
+        <Section backgroundColor="#E0E1DA">
           <GratitudeNumberedInputSection
             title="Highlights of the Day"
             entries={formik.values.highlights}
@@ -117,8 +104,8 @@ export const MainScreen = ({
             fieldName="lessonLearned"
             onBlur={(field) => formik.handleBlur(field)}
           />
-        </View>
-        <SubmitButton onSubmit={formik.handleSubmit} />
+          <SubmitButton onSubmit={formik.handleSubmit} />
+        </Section>
       </KeyboardAwareScrollView>
     </>
   );

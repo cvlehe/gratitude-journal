@@ -34,11 +34,13 @@ export const useEntries = () => {
       setData(parsedResult);
       if (parsedResult.length > 0) {
         const lastEntry = parsedResult[parsedResult.length - 1];
-        if (dayjs(lastEntry.date).isToday()) {
-          setCurrentPage(parsedResult.length - 1);
-        }else {
-          setCurrentPage(parsedResult.length);
-        }
+        const currentPageNumber = dayjs(lastEntry.date).isToday()
+          ? parsedResult.length - 1
+          : parsedResult.length;
+        setCurrentPage(currentPageNumber);
+        setCurrentEntry(
+          currentPageNumber < parsedResult.length ? parsedResult[currentPageNumber] : undefined
+        );
       }
     }
     setLoading(false);

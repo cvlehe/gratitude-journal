@@ -1,6 +1,7 @@
 import React from 'react';
 import { Text } from 'react-native';
-export const GratitudeInputTitle = ({ title }: { title: string }) => {
+
+const GratitudeInputTitle = ({ title }: { title: string }) => {
   return (
     <Text
       style={{

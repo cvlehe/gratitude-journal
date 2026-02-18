@@ -1,9 +1,8 @@
 import React from 'react';
-import { View } from 'react-native';
 import { Text } from 'react-native';
 import { Quote } from '../types/types';
 
-const QuoteRow = ({ quote }: { quote?: Quote }) => {
+const QuoteRow = ({ quote }: { quote: Quote }) => {
   return (
     <>
       <Text
@@ -14,7 +13,7 @@ const QuoteRow = ({ quote }: { quote?: Quote }) => {
           marginTop: 32,
         }}
       >
-        "{quote?.text}"
+        {`"${quote.text}"`}
       </Text>
       <Text
         style={{

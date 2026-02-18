@@ -1,6 +1,5 @@
 import React from 'react';
-import { Text } from 'react-native';
-import { TouchableOpacity } from 'react-native';
+import { Text, TouchableOpacity } from 'react-native';
 
 const NavigationButton = ({ onPress, type }: { onPress: () => void; type: 'back' | 'forward' }) => {
   return (
