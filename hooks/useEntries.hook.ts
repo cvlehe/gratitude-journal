@@ -9,7 +9,6 @@ dayjs.extend(isToday);
 
 export const useEntries = () => {
   const [loading, setLoading] = useState<boolean>(true);
-  const [currentEntry, setCurrentEntry] = useState<JournalEntry>();
   const [currentPage, setCurrentPage] = useState<number>(0);
   const [data, setData] = useState<JournalData>([]);
 
@@ -21,11 +20,11 @@ export const useEntries = () => {
   }, [currentPage]);
 
   const goForward = useCallback(() => {
-    if (currentPage === data.length || dayjs(currentEntry?.date).isToday()) {
+    if (currentPage === data.length || dayjs(data[currentPage]?.date).isToday()) {
       return;
     }
     setCurrentPage(currentPage + 1);
-  }, [currentPage]);
+  }, [currentPage, data]);
 
   const fetchData = useCallback(async () => {
     const result = await AsyncStorage.getItem('journalData');
@@ -38,9 +37,6 @@ export const useEntries = () => {
           ? parsedResult.length - 1
           : parsedResult.length;
         setCurrentPage(currentPageNumber);
-        setCurrentEntry(
-          currentPageNumber < parsedResult.length ? parsedResult[currentPageNumber] : undefined
-        );
       }
     }
     setLoading(false);
@@ -77,14 +73,6 @@ export const useEntries = () => {
     await AsyncStorage.setItem('journalData', JSON.stringify(newData));
   }, [currentPage, data]);
 
-  useEffect(() => {
-    if (currentPage >= data.length) {
-      setCurrentEntry(undefined);
-    } else {
-      setCurrentEntry(data[currentPage]);
-    }
-  }, [currentPage, data]);
-
   const importEntries = useCallback(async () => {
     const result = await importEntriesFromStorage();
     if (result) {
@@ -106,7 +94,7 @@ export const useEntries = () => {
 
   return {
     loading,
-    currentEntry,
+    currentEntry: currentPage < data.length ? data[currentPage] : undefined,
     goBack,
     goForward,
     saveEntry,
