@@ -10,6 +10,7 @@
     "build:internal": "eas build --platform android --profile preview",
     "format": "prettier --write .",
     "check-format": "prettier --check .",
+    "test": "node --test",
     "lint": "expo lint"
   },
   "dependencies": {

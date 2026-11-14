@@ -76,7 +76,12 @@ export const useEntries = () => {
   const importEntries = useCallback(async () => {
     const result = await importEntriesFromStorage();
     if (result) {
+      await AsyncStorage.setItem('journalData', JSON.stringify(result));
       setData(result);
+      const lastEntry = result[result.length - 1];
+      setCurrentPage(
+        lastEntry && dayjs(lastEntry.date).isToday() ? result.length - 1 : result.length
+      );
       Toast.show({
         type: 'success',
         text1: 'Entries imported',
@@ -86,10 +91,6 @@ export const useEntries = () => {
 
   const exportEntries = useCallback(async () => {
     await exportEntriesToStorage(data);
-    Toast.show({
-      type: 'success',
-      text1: 'Entries exported',
-    });
   }, [data]);
 
   return {
