@@ -7,7 +7,10 @@ const ts = require('typescript');
 
 const root = path.join(__dirname, '..');
 
-const makeScreen = () => {
+const makeScreen = (
+  fetchQuote = async () => ({ text: 'Downloaded today', author: 'Today' }),
+  setTimer = setTimeout
+) => {
   const source = fs.readFileSync(path.join(root, 'components/MainScreen.tsx'), 'utf8');
   const compiled = ts.transpileModule(source, {
     compilerOptions: {
@@ -55,7 +58,7 @@ const makeScreen = () => {
       }),
     },
     '../hooks/useQuotes.hook': {
-      default: () => ({ fetchQuote: async () => ({ text: 'Downloaded today', author: 'Today' }) }),
+      default: () => ({ fetchQuote }),
     },
     'react-native-toast-message': { default: { show: () => {} } },
     './QuoteRow': { default: QuoteRow },
@@ -69,6 +72,8 @@ const makeScreen = () => {
   vm.runInNewContext(compiled, {
     module,
     exports: module.exports,
+    setTimeout: setTimer,
+    clearTimeout,
     require: (name) => {
       assert.ok(Object.hasOwn(mocks, name), `Unexpected import: ${name}`);
       return mocks[name];
@@ -133,4 +138,38 @@ test('editing an older entry keeps its original quote', async () => {
   await screen.find(previousPage, screen.SubmitButton).props.onSubmit();
 
   assert.equal(saved.quote.text, 'Earlier quote');
+});
+
+test('a failed quote request does not prevent saving an entry', async () => {
+  const screen = makeScreen(async () => {
+    throw new Error('offline');
+  });
+  let saved;
+  const newPage = screen.render({
+    entry: undefined,
+    submitPressed: (entry) => (saved = entry),
+  });
+
+  await screen.find(newPage, screen.SubmitButton).props.onSubmit();
+  assert.ok(saved, 'entry should be saved');
+  assert.equal(saved.quote, undefined);
+});
+
+test('a stalled quote request does not prevent saving an entry', async () => {
+  const screen = makeScreen(
+    () => new Promise(() => {}),
+    (callback) => {
+      callback();
+      return 1;
+    }
+  );
+  let saved;
+  const newPage = screen.render({
+    entry: undefined,
+    submitPressed: (entry) => (saved = entry),
+  });
+
+  await screen.find(newPage, screen.SubmitButton).props.onSubmit();
+  assert.ok(saved, 'entry should be saved');
+  assert.equal(saved.quote, undefined);
 });

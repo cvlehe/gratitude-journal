@@ -9,11 +9,11 @@ const useQuotes = () => {
       Platform.OS === 'web' ? `https://api.allorigins.win/get?url=${url}` : url
     );
     const data = await response.json();
-    if (!data || data?.length < 1) {
-      return { text: 'Error fetching quote', author: '' };
+    if (!Array.isArray(data) || typeof data[0]?.q !== 'string' || !data[0].q) {
+      throw new Error('Quote unavailable');
     }
 
-    return Promise.resolve({ text: data[0].q, author: data[0].a });
+    return { text: data[0].q, author: typeof data[0].a === 'string' ? data[0].a : '' };
   }, []);
 
   return { fetchQuote };

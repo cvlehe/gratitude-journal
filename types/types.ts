@@ -15,7 +15,7 @@ export type JournalData = JournalEntry[];
 
 export type JournalEntry = {
   date: Date;
-  quote: Quote;
+  quote?: Quote;
   grateful: string[];
   hopes: string[];
   affirmation: string;

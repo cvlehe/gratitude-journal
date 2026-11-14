@@ -11,6 +11,7 @@ import { Section } from './Section';
 import Toast from 'react-native-toast-message';
 
 type JournalFormValues = Omit<JournalEntry, 'date' | 'quote'>;
+const QUOTE_WAIT_MS = 1500;
 
 export const MainScreen = ({
   entry,
@@ -41,25 +42,35 @@ export const MainScreen = ({
 
   const quote = entry ? entry.quote : todayQuote;
 
+  const loadOptionalQuote = useCallback(
+    () =>
+      new Promise<Quote | undefined>((resolve) => {
+        const timer = setTimeout(() => resolve(undefined), QUOTE_WAIT_MS);
+        loadTodayQuote().then(
+          (result) => {
+            clearTimeout(timer);
+            resolve(result);
+          },
+          () => {
+            clearTimeout(timer);
+            resolve(undefined);
+          }
+        );
+      }),
+    [loadTodayQuote]
+  );
+
   const onSubmitCallback = useCallback(
     async (values: JournalFormValues) => {
-      let quoteToSave = entry?.quote;
-      if (!entry) {
-        try {
-          quoteToSave = await loadTodayQuote();
-        } catch {
-          Toast.show({ type: 'error', text1: "Could not load today's quote. Try again." });
-          return;
-        }
-      }
+      const quoteToSave = entry ? entry.quote : await loadOptionalQuote();
 
       await submitPressed({
         ...values,
         date: entry?.date ?? new Date(),
-        quote: quoteToSave ?? { text: '', author: '' },
+        ...(quoteToSave ? { quote: quoteToSave } : {}),
       });
     },
-    [entry, loadTodayQuote, submitPressed]
+    [entry, loadOptionalQuote, submitPressed]
   );
 
   const formik = useFormik<JournalFormValues>({
@@ -87,7 +98,7 @@ export const MainScreen = ({
   useEffect(() => {
     if (!entry && !todayQuote) {
       loadTodayQuote().catch(() => {
-        Toast.show({ type: 'error', text1: "Could not load today's quote. Try again." });
+        Toast.show({ type: 'error', text1: "Today's quote is unavailable." });
       });
     }
   }, [entry, loadTodayQuote, todayQuote]);
@@ -96,7 +107,7 @@ export const MainScreen = ({
     <>
       <KeyboardAwareScrollView enableOnAndroid extraHeight={150} style={{ flex: 1 }}>
         <Section>
-          {quote && <QuoteRow quote={quote} />}
+          {quote?.text && <QuoteRow quote={quote} />}
           <GratitudeNumberedInputSection
             title="I am grateful for..."
             entries={formik.values.grateful}
