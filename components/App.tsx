@@ -6,8 +6,17 @@ import { useEntries } from '../hooks/useEntries.hook';
 import DateRow from './DateRow';
 import Toast from 'react-native-toast-message';
 import Menu from './Menu';
+import { BiometricGate } from './BiometricGate';
 
 export default function App() {
+  return (
+    <BiometricGate>
+      <JournalApp />
+    </BiometricGate>
+  );
+}
+
+function JournalApp() {
   const {
     goBack,
     goForward,

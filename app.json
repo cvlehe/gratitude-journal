@@ -40,6 +40,12 @@
         {
           "iCloudContainerEnvironment": "Production"
         }
+      ],
+      [
+        "expo-local-authentication",
+        {
+          "faceIDPermission": "Use Face ID to unlock your private Gratitude Journal."
+        }
       ]
     ]
   }
