@@ -1,4 +1,4 @@
-import React, { useCallback, useEffect, useState } from 'react';
+import React, { useCallback, useEffect, useRef, useState } from 'react';
 import GratitudeNumberedInputSection from './GratitudeNumberedInputSection';
 import GratitudeInputSection from './GratitudeInputSection';
 import { JournalEntry, Quote } from '../types/types';
@@ -8,17 +8,61 @@ import useQuotes from '../hooks/useQuotes.hook';
 import { KeyboardAwareScrollView } from 'react-native-keyboard-aware-scroll-view';
 import QuoteRow from './QuoteRow';
 import { Section } from './Section';
+import Toast from 'react-native-toast-message';
+
+type JournalFormValues = Omit<JournalEntry, 'date' | 'quote'>;
 
 export const MainScreen = ({
   entry,
   submitPressed,
 }: {
   entry?: JournalEntry;
-  submitPressed: (values: JournalEntry) => void;
+  submitPressed: (values: JournalEntry) => void | Promise<void>;
 }) => {
-  const [quote, setQuote] = useState<Quote | undefined>(entry?.quote ?? undefined);
+  const [todayQuote, setTodayQuote] = useState<Quote | undefined>();
+  const quoteRequest = useRef<Promise<Quote> | null>(null);
+  const { fetchQuote } = useQuotes();
 
-  const formik = useFormik({
+  const loadTodayQuote = useCallback((): Promise<Quote> => {
+    if (todayQuote) return Promise.resolve(todayQuote);
+    if (!quoteRequest.current) {
+      quoteRequest.current = fetchQuote()
+        .then((result) => {
+          setTodayQuote(result);
+          return result;
+        })
+        .catch((error) => {
+          quoteRequest.current = null;
+          throw error;
+        });
+    }
+    return quoteRequest.current;
+  }, [fetchQuote, todayQuote]);
+
+  const quote = entry ? entry.quote : todayQuote;
+
+  const onSubmitCallback = useCallback(
+    async (values: JournalFormValues) => {
+      let quoteToSave = entry?.quote;
+      if (!entry) {
+        try {
+          quoteToSave = await loadTodayQuote();
+        } catch {
+          Toast.show({ type: 'error', text1: "Could not load today's quote. Try again." });
+          return;
+        }
+      }
+
+      await submitPressed({
+        ...values,
+        date: entry?.date ?? new Date(),
+        quote: quoteToSave ?? { text: '', author: '' },
+      });
+    },
+    [entry, loadTodayQuote, submitPressed]
+  );
+
+  const formik = useFormik<JournalFormValues>({
     initialValues: {
       grateful: entry?.grateful ?? [],
       hopes: entry?.hopes ?? [],
@@ -26,41 +70,27 @@ export const MainScreen = ({
       highlights: entry?.highlights ?? [],
       lessonLearned: '',
     },
-    onSubmit: (values) => {
-      onSubmitCallback(values);
-    },
+    onSubmit: onSubmitCallback,
   });
-
-  const onSubmitCallback = useCallback(
-    (values: typeof formik.initialValues) => {
-      submitPressed({
-        ...values,
-        date: entry?.date ?? new Date(),
-        quote: quote ?? { text: '', author: '' },
-      });
-    },
-    [entry?.date, formik, quote, submitPressed]
-  );
+  const { setValues } = formik;
 
   useEffect(() => {
-    formik.setValues({
+    setValues({
       grateful: entry?.grateful ?? [],
       hopes: entry?.hopes ?? [],
       affirmation: entry?.affirmation ?? '',
       highlights: entry?.highlights ?? [],
       lessonLearned: entry?.lessonLearned ?? '',
     });
-  }, [entry]);
-
-  const { fetchQuote } = useQuotes();
+  }, [entry, setValues]);
 
   useEffect(() => {
-    if (!quote) {
-      fetchQuote().then((result) => {
-        setQuote(result);
+    if (!entry && !todayQuote) {
+      loadTodayQuote().catch(() => {
+        Toast.show({ type: 'error', text1: "Could not load today's quote. Try again." });
       });
     }
-  }, [fetchQuote, quote]);
+  }, [entry, loadTodayQuote, todayQuote]);
 
   return (
     <>
